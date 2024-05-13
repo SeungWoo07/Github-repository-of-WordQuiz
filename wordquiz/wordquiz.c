@@ -71,11 +71,23 @@ void print_menu() {
 }
 
 int get_command() {
-	int cmd ;
+    int cmd;
+    int result;
 
-	printf(">") ;
-	scanf("%d", &cmd) ;
-	return cmd ;
+    do {
+        printf(">");
+        result = scanf("%d", &cmd);
+
+        // If the user enters a non-integer input, clear the input buffer
+        if(result != 1) {
+            int ch;
+            while ((ch = getchar()) != '\n' && ch != EOF);
+            printf("\n\nInvalid input. Please enter a number between 1 and 4.\n\n");
+        } else if(cmd < 1 || cmd > 4) {
+            printf("\n\nInvalid input. Please enter a number between 1 and 4.\n\n");
+        }
+    } while(cmd < 1 || cmd > 4);
+
 }
 
 void list_wordbooks ()
