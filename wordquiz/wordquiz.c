@@ -10,6 +10,7 @@ typedef
 		C_LIST,
 		C_SHOW,
 		C_TEST,
+		C_Search,
 		C_EXIT,
 	}
 	command_t ;
@@ -64,10 +65,11 @@ char * read_a_line (FILE * fp)
 
 void print_menu() {
 
-	printf("1. List all wordbooks\n") ;
-	printf("2. Show the words in a wordbook\n") ;
-	printf("3. Test with a wordbook\n") ;
-	printf("4. Exit\n") ;
+	printf("1. List all wordbooks\n");
+    printf("2. Show the words in a wordbook\n");
+    printf("3. Test with a wordbook\n");
+    printf("4. Search a word in a wordbook\n");
+    printf("5. Exit\n");
 }
 
 int get_command() {
@@ -83,10 +85,10 @@ int get_command() {
             int ch;
             while ((ch = getchar()) != '\n' && ch != EOF);
             printf("\n\nInvalid input. Please enter a number between 1 and 4.\n\n");
-        } else if(cmd < 1 || cmd > 4) {
+        } else if(cmd < C_ZERO+1 || cmd > C_EXIT+1) {
             printf("\n\nInvalid input. Please enter a number between 1 and 4.\n\n");
         }
-    } while(cmd < 1 || cmd > 4);
+    } while(cmd < C_ZERO+1 || cmd > C_EXIT+1);
 
 }
 
@@ -199,6 +201,37 @@ char* strndup(const char* s, size_t n)
     return new;
 }
 
+void search_word() {
+    char wordbook[128];
+    char filepath[256];
+    char search_word[128];
+    char line[256];
+
+    printf("Type in the name of the wordbook?\n");
+    printf(">");
+    scanf("%s", wordbook);
+
+    printf("\nType in the word to search?\n");
+    printf(">");
+    scanf("%s", search_word);
+
+    sprintf(filepath, "wordbooks/%s", wordbook);
+
+    FILE *fp = fopen(filepath, "r");
+    if (fp == NULL) {
+        printf("Failed to open the wordbook\n\n\n");
+        return;
+    }
+
+    while (fgets(line, sizeof(line), fp)) {
+        if (strstr(line, search_word)) {
+            printf("Found the word: %s\n\n\n", line);
+        }
+    }
+
+    fclose(fp);
+}
+
 int main ()
 {
 	
@@ -224,6 +257,9 @@ int main ()
 				run_test() ;
 				break ;
 			}
+			case C_Search:
+                search_word();
+                break;
 
 			case C_EXIT: {
 				return EXIT_SUCCESS ;
